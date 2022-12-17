@@ -16,31 +16,46 @@ N = 20
 # sd.sleep()
 # sd.random_number()
 # sd.user_want_exit()
-
+random_start_points_x = []
+count = 0
+snowflakes_count = 0
 y = 500
-x = 100`
+length = sd.random_number(a=50, b=100)
 
-y2 = 450
-x2 = 150
-while True:
-    sd.clear_screen()
-    point = sd.get_point(x, y)
-    sd.snowflake(center=point, length=50)
-    y -= 10
-    if y < 50:
-       break
-    x = x + 10
 
-    point2 = sd.get_point(x2, y2)
-    sd.snowflake(center=point2, length=30)
-    y2 -= 10
-    if y2 < 50:
-       break
-    x2 = x2 + 20
+def snowflake_falling(x, y, length):
+    while True:
+        sd.clear_screen()
+        point = sd.get_point(x=x, y=y)
+        sd.snowflake(center=point, length=length)
+        y -= 10
+        if y < 50:
+            break
+        x += 10
+        sd.sleep(0.1)
+        if sd.user_want_exit():
+            break
+#     # point2 = sd.get_point(x2, y2)
+#     # sd.snowflake(center=point2, length=30)
+#     # y2 -= 10
+#     # if y2 < 50:
+#     #    break
+#     # x2 = x2 + 20
 
-    sd.sleep(0.1)
-    if sd.user_want_exit():
+
+while count < N:
+    count += 1
+    if count > 21:
         break
+    random_start_points_x.append(sd.random_number(a=50, b=550))
+
+
+while snowflakes_count < N:
+    snowflakes_count += 1
+    if snowflakes_count > 21:
+        break
+    new_x = random_start_points_x[snowflakes_count]
+    snowflake_falling(x=new_x, y=y, length=length)
 
 
 while True:
