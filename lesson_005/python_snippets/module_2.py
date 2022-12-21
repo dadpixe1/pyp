@@ -9,4 +9,4 @@ def function1():
 
 print("Всем привет в этом чате!!!1")
 
-# print("Module name is", __name__)
+print("Module name is", __name__)
