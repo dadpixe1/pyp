@@ -1,2 +1,3 @@
-from package_1 import function3
-function3()
+
+from lesson_005 import inhabitants
+print(inhabitants)
