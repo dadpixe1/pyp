@@ -15,4 +15,9 @@
 # Создать рецепт своего бургера, по вашему вкусу.
 # Если не хватает инградиентов - создать соответствующие функции в модуле my_burger
 
-# TODO здесь ваш код
+from burger.my_burger import double_with_cheese
+from burger.my_burger import now
+from burger.my_burger import breadt
+
+for i in double_with_cheese():
+    print(now, i)
