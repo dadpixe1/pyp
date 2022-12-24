@@ -15,8 +15,10 @@
 # Создать рецепт своего бургера, по вашему вкусу.
 # Если не хватает инградиентов - создать соответствующие функции в модуле my_burger
 
-from burger.my_burger import double_with_cheese
-from burger.my_burger import now
+from lesson_005.burger.my_burger import bread_func, pickle_func, mayonnaise_func, tomato_func, steak_func, cheese_func
 
-for i in double_with_cheese():
-    print(now, i)
+print('Double with cheese recipe:')
+bread_func(), pickle_func(), tomato_func(), mayonnaise_func(), cheese_func(), steak_func(), cheese_func(), steak_func(),
+bread_func()
+print('My burger recipe:')
+bread_func(), tomato_func(), bread_func()

@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import simple_draw as sd
 
+sd.resolution = (1200, 700)
 # Создать пакет, в который скопировать функции отрисовки из предыдущего урока
 #  - радуги
 #  - стены
@@ -17,8 +19,17 @@
 #  - справа в небе - радуга, слева - солнце (весна же!)
 # пример см. lesson_005/results/04_painting.jpg
 # Приправить своей фантазией по вкусу (коты? коровы? люди? трактор? что придумается)
+# from lesson_005.drawing.nature.rainbow import *
+#
+# rainbow(radius=radius, radius_step=radius_step, point=point, width=width)
+# sd.pause()
+import lesson_005.drawing.wall
+import lesson_005.drawing.smile
+import lesson_005.drawing.nature.rainbow
 
-# TODO здесь ваш код
+
+sd.pause()
+
 
 # Усложненное задание (делать по желанию)
 # Анимировать картину.

@@ -64,8 +64,9 @@ def snowflake(x):
         sd.sleep(0.1)
 
 
+
 while True:
-    for _ in range(8):
+    for _ in range(5):
         snowflake(x=_)
     if sd.user_want_exit():
         break

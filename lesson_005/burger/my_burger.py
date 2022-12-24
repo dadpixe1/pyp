@@ -8,9 +8,26 @@ cheese = 'сыр'
 tomato = 'помидор'
 mayonnaise = 'майонез'
 
-double_with_cheese_recipe = [bread, pickle, tomato, mayonnaise, cheese, steak, cheese, steak, bread]
+
+def bread_func():
+    print(now, bread)
 
 
-def double_with_cheese(): # Вариант 1
-    return reversed(double_with_cheese_recipe)
+def steak_func():
+    print(now, steak)
 
+
+def pickle_func():
+    print(now, pickle)
+
+
+def cheese_func():
+    print(now, cheese)
+
+
+def tomato_func():
+    print(now, tomato)
+
+
+def mayonnaise_func():
+    print(now, mayonnaise)
