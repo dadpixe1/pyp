@@ -43,7 +43,7 @@
 # Это пример применения SOLID принципа (см https://goo.gl/GFMoaI) в архитектуре программ.
 # Точнее, в этом случае важен принцип единственной ответственности - https://goo.gl/rYb3hT
 
-from lesson_006.bulls_und_cows.mastermind_engine import number_choose, number_guess, count, bulls_cows_dict, _holder
+from lesson_006.bulls_und_cows.mastermind_engine import number_choose, number_guess, count, bulls_cows_dict
 
 number_choose()
 
@@ -53,6 +53,7 @@ while True:
     number_guess(user_input=user_input, bulls=0, cows=0)
     if bulls_cows_dict['bulls'] > 3:
         print('Вы угадали за', count, 'ходов')
+        count = 0
         try_again = input('Хотите еще партию? (Y/N)')
         if try_again == 'Y':
             number_choose()

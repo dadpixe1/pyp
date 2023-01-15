@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import simple_draw as sd
-
+from lesson_006.snowfall import create_snowflakes, create_colored_snowflakes, snowflakes_moving, \
+    falling_snowflakes_numbers, snowflakes_del, create_new_snowflake, count, N, step
 # На основе кода из lesson_004/05_snowfall.py
 # сделать модуль snowfall.py в котором реализовать следующие функции
 #  создать_снежинки(N) - создает N снежинок
@@ -13,16 +14,25 @@ import simple_draw as sd
 # В текущем модуле реализовать главный цикл падения снежинок,
 # обращаясь ТОЛЬКО к функциям модуля snowfall
 
-# создать_снежинки(N)
-while True:
-    #  нарисовать_снежинки_цветом(color=sd.background_color)
-    #  сдвинуть_снежинки()
-    #  нарисовать_снежинки_цветом(color)
-    #  если есть номера_достигших_низа_экрана() то
-    #       удалить_снежинки(номера)
-    #       создать_снежинки(count)
-    sd.sleep(0.1)
-    if sd.user_want_exit():
-        break
 
-sd.pause()
+create_snowflakes(N=N)
+while True:
+    for i in range(count):
+        sd.start_drawing()
+        #  нарисовать_снежинки_цветом(color=sd.background_color)
+        create_colored_snowflakes(i=i, color=sd.background_color)
+        # сдвинуть_снежинки()
+        snowflakes_moving(i=i)
+        #  нарисовать_снежинки_цветом(color)
+        create_colored_snowflakes(i=i, color=sd.COLOR_WHITE)
+        # если есть номера_достигших_низа_экрана() то
+        if falling_snowflakes_numbers(i=i) is True:
+        #     удалить_снежинки(номера)
+            snowflakes_del(i=i)
+        #     создать_снежинки(count)
+            create_new_snowflake(i=i)
+        sd.sleep(0.1)
+        sd.finish_drawing()
+    step += 1
+    if count < N and step % 5 == 0:
+        count += 1
