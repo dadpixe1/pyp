@@ -71,6 +71,7 @@ class Man:
             self.watch_MTV()
 
 
+
 class House:
 
     def __init__(self):
@@ -78,7 +79,7 @@ class House:
         self.money = 0
 
     def __str__(self):
-        return 'В доме еды осталось {}, денег осталось {}'.format(
+        return 'В холодильнике еды осталось {}, денег в тумбочке осталось {}'.format(
             self.food, self.money)
 
 
