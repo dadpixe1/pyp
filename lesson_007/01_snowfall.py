@@ -91,14 +91,14 @@ N = 20
 
 def get_flakes(count):
     flakes_list = []
-    for _ in range(count):
+    for _ in range(1, count):
         each_flake = Snowflake(x=(sd.random_number(a=5, b=595)), y=(sd.random_number(a=595, b=650)))
         flakes_list.append(each_flake)
     return flakes_list
 
 
 def get_fallen_flakes():
-    for i in range(1, N):
+    for i in range(1, len(flakes)):
         if flakes[i].y < -50:
             return i
 
@@ -108,7 +108,7 @@ def append_flakes(count):
     flakes[count].x = (sd.random_number(a=5, b=595))
 
 
-flakes = get_flakes(count=N) # создать список снежинок
+flakes = get_flakes(count=N)  # создать список снежинок
 
 while True:
     for flake in flakes:
