@@ -60,6 +60,7 @@ class House:
 class Man:
     fullness = 30
     happiness = 100
+    sex_grammar = ''
 
     def __init__(self, name):
         self.name = name
@@ -89,12 +90,12 @@ class Man:
             home.accounting += rest_of_food
             self.fullness += rest_of_food
             home.food_in_the_fridge -= rest_of_food
-            print('{} поел {} еды.'.format(self.name, rest_of_food))
+            print('{} поел{} {} еды.'.format(self.name, self.sex_grammar, rest_of_food))
         else:
             home.food_accounting += food_to_eat
             self.fullness += food_to_eat
             home.food_in_the_fridge -= food_to_eat
-            print('{} поел {} еды.'.format(self.name, food_to_eat))
+            print('{} поел{} {} еды.'.format(self.name, self.sex_grammar, food_to_eat))
 
 
 class Husband(Man):
@@ -115,7 +116,7 @@ class Husband(Man):
             else:
                 self.gaming()
 
-    def eat(self):
+    def eat(self, sex_grammar=None):
         super().eat()
 
     def work(self):
@@ -152,6 +153,7 @@ class Wife(Man):
                 self.buy_fur_coat()
 
     def eat(self):
+        self.sex_grammar = 'а'
         super().eat()
 
     def shopping(self):
