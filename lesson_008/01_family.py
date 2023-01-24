@@ -73,10 +73,11 @@ class Man:
         dice = randint(5, 10)
         home.cat_food += dice
         home.bedside_money -= dice
-        print('{} купил{} {} {} еды.'.format(self.name, self.sex_grammar, Cat.__name__, dice))
+        home.accounting += dice
+        print('{} купил{} {}у {} еды.'.format(self.name, self.sex_grammar, cat.name, dice))
 
     def act(self):
-        cat_petting_dice = randint(1, 25)
+        cat_petting_dice = randint(1, 100)
         if home.dirt > 90:
             self.happiness -= 10
             return True
@@ -90,7 +91,7 @@ class Man:
             self.buy_cat_food()
             self.fullness -= 10
             return False
-        if cat_petting_dice == 1:
+        if cat_petting_dice == 3:
             self.fullness -= 10
             self.happiness += 5
             print('{} гладит шерстяного.'.format(self.name))
