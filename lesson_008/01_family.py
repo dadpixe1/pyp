@@ -69,6 +69,12 @@ class Man:
     def __str__(self):
         return 'Я - {}, степень сытости - {}, счастье - {}.'.format(self.name, self.fullness, self.happiness)
 
+    def buy_cat_food(self):
+        dice = randint(5, 10)
+        home.cat_food += dice
+        home.bedside_money -= dice
+        print('{} купил{} {} {} еды.'.format(self.name, self.sex_grammar, Cat.__name__, dice))
+
     def act(self):
         cat_petting_dice = randint(1, 25)
         if home.dirt > 90:
@@ -79,6 +85,10 @@ class Man:
             return False
         if self.happiness < 10:
             print('Счастья - {}, {} - умер от депрессии.'.format(self.happiness, self.name))
+            return False
+        if home.cat_food < 10:
+            self.buy_cat_food()
+            self.fullness -= 10
             return False
         if cat_petting_dice == 1:
             self.fullness -= 10
@@ -140,6 +150,7 @@ class Husband(Man):
 
 class Wife(Man):
     fur_coats = 0
+    sex_grammar = 'а'
 
     def __init__(self, name):
         super().__init__(name=name)
@@ -159,7 +170,6 @@ class Wife(Man):
                 self.buy_fur_coat()
 
     def eat(self):
-        self.sex_grammar = 'а'
         super().eat()
 
     def shopping(self):
@@ -205,16 +215,16 @@ home = House(name='Хаус')
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 
-for day in range(1, 366):
-    print('================== День {} =================='.format(day))
-    serge.act()
-    masha.act()
-    print(serge)
-    print(masha)
-    print(home)
-print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
-print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
-    home.accounting, home.food_accounting, masha.fur_coats))
+# for day in range(1, 366):
+#     print('================== День {} =================='.format(day))
+#     serge.act()
+#     masha.act()
+#     print(serge)
+#     print(masha)
+#     print(home)
+# print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
+# print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
+#     home.accounting, home.food_accounting, masha.fur_coats))
 
 # Часть вторая
 #
@@ -248,24 +258,55 @@ class Cat:
     def __init__(self, name):
         self.name = name
 
+    def __str__(self):
+        return 'Я - кот {}, сытость - {}.'.format(self.name, self.fullness)
+
     def act(self):
+        dice = randint(1, 10)
         if self.cat_alive == 1:
             print('{} больше не с нами.'.format(self.name))
+        if self.fullness < 10:
+            self.eat()
+        elif dice > 8:
+            self.soil()
+        else:
+            self.sleep()
 
     def eat(self):
         if self.fullness < 0:
             self.cat_alive = 1
             print('{} издох.'.format(self.name))
             return '{} больше не с нами.'.format(self.name)
+        else:
+            dice = randint(7, 10)
+            self.fullness += dice * 2
+            home.cat_food -= dice
+            print('{} поел {} еды.'.format(self.name, dice))
 
     def sleep(self):
         self.fullness -= 10
+        print('{} поспал.'.format(self.name))
 
     def soil(self):
         self.fullness -= 10
         home.dirt += 5
+        print('{} драл обои.'.format(self.name))
 
 
+cat = Cat(name='Пират')
+
+for day in range(1, 366):
+    print('================== День {} =================='.format(day))
+    serge.act()
+    masha.act()
+    cat.act()
+    print(serge)
+    print(masha)
+    print(cat)
+    print(home)
+print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
+print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
+    home.accounting, home.food_accounting, masha.fur_coats))
 # Часть вторая бис
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
