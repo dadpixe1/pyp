@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from termcolor import cprint
 from random import randint
 
 # Часть первая.
@@ -44,14 +43,16 @@ from random import randint
 
 class House:
     bedside_money = 100
+    accounting = 0
     food_in_the_fridge = 50
+    food_accounting = 0
     dirt = 0
 
     def __init__(self, name):
         self.name = name
-        pass
 
     def __str__(self):
+        self.dirt += 5
         return 'Денег в тумбочке - {}, еды в холодильнике - {}, грязи в {} - {}.'.format(
             self.bedside_money, self.food_in_the_fridge, self.name, self.dirt)
 
@@ -67,43 +68,66 @@ class Man:
         return 'Я - {}, степень сытости - {}, счастье - {}.'.format(self.name, self.fullness, self.happiness)
 
     def act(self):
-        home.dirt += 2.5
         if self.fullness < 0:
             print('Сытость - {}, {} - умер от голода.'.format(self.fullness, self.name))
+            return False
+        if self.happiness < 10:
+            print('Счастья - {}, {} - умер от депрессии.'.format(self.happiness, self.name))
+            return False
+        if home.dirt > 90:
+            self.happiness -= 10
+            return True
+        return True
 
     def eat(self):
-        if home.food_in_the_fridge < 30:
+        food_to_eat = randint(1, 30)
+        if home.food_in_the_fridge == 0:
+            self.fullness -= 10
+            print('Еды в холодильнике нет.')
+        elif home.food_in_the_fridge < food_to_eat:
             rest_of_food = home.food_in_the_fridge
+            home.accounting += rest_of_food
             self.fullness += rest_of_food
             home.food_in_the_fridge -= rest_of_food
+            print('{} поел {} еды.'.format(self.name, rest_of_food))
         else:
-            self.fullness += 30
-            home.food_in_the_fridge -= 30
+            home.food_accounting += food_to_eat
+            self.fullness += food_to_eat
+            home.food_in_the_fridge -= food_to_eat
+            print('{} поел {} еды.'.format(self.name, food_to_eat))
 
 
 class Husband(Man):
+    salary = 150
 
     def __init__(self, name):
         super().__init__(name=name)
-        pass
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
+        if super().act():
+            if self.fullness <= 20:
+                self.eat()
+            elif home.bedside_money <= 70:
+                self.work()
+            else:
+                self.gaming()
 
     def eat(self):
         super().eat()
-        pass
 
     def work(self):
         self.fullness -= 10
-        home.bedside_money += 150
+        self.happiness -= 70
+        home.bedside_money += self.salary
+        print('{} сходил на работу. Положил в тумбочку {}.'.format(self.name, self.salary))
 
     def gaming(self):
         self.fullness -= 10
-        pass
+        self.happiness += 20
+        print('{} игрался в игры.'.format(self.name))
 
 
 class Wife(Man):
@@ -111,57 +135,78 @@ class Wife(Man):
 
     def __init__(self, name):
         super().__init__(name=name)
-        pass
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
+        if super().act():
+            dice = randint(1, 3)
+            if self.fullness <= 20:
+                self.eat()
+            elif home.food_in_the_fridge <= 60:
+                self.shopping()
+            elif dice == 1:
+                self.clean_house()
+            else:
+                self.buy_fur_coat()
 
     def eat(self):
         super().eat()
-        pass
 
     def shopping(self):
+        value_of_purchase = randint(50, 75)
         if home.bedside_money == 0:
-            print('Дожили, нет денег купить еды.')
             self.fullness -= 10
-        elif home.bedside_money <= 70:
+            print('Дожили, нет денег купить еды.')
+        elif home.bedside_money <= value_of_purchase:
+            self.fullness -= 10
             rest_of_money = home.bedside_money
+            home.accounting += rest_of_money
             home.bedside_money -= rest_of_money
             home.food_in_the_fridge += rest_of_money
-            self.fullness -= 10
+            print('{} купила {} еды на остатки денег.'.format(self.name, rest_of_money))
         else:
-            home.bedside_money -= 70
-            home.food_in_the_fridge += 70
             self.fullness -= 10
+            home.accounting += value_of_purchase
+            home.bedside_money -= value_of_purchase
+            home.food_in_the_fridge += value_of_purchase
+            print('{} купила {} еды.'.format(self.name, value_of_purchase))
 
     def buy_fur_coat(self):
-        if home.bedside_money >= 350:
+        fur_coat_cost = 350
+        if home.bedside_money >= fur_coat_cost:
             self.fullness -= 10
             self.fur_coats += 1
-            home.bedside_money -= 350
+            self.happiness += 60
+            home.accounting += fur_coat_cost
+            home.bedside_money -= fur_coat_cost
+            print('{} купила шубу.'.format(self.name))
+        else:
+            self.fullness -= 10
+            print('{} жалуется, что на шубу не хватает {} денег.'.format(self.name, fur_coat_cost - home.bedside_money))
 
     def clean_house(self):
+        value_of_cleaning = randint(1, 100)
         self.fullness -= 10
-        pass
-# Грязь добавляется каждый день по 5 пунктов, за одну уборку жена может убирать до 100 единиц грязи.
-# Если в доме грязи больше 90 - у людей падает степень счастья каждый день на 10 пунктов,
+        home.dirt -= value_of_cleaning
+        print('{} убралась в доме, грязи стало меньше на {}.'.format(self.name, value_of_cleaning))
 
-home = House(name='Хоум')
+
+home = House(name='Хаус')
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 
-for day in range(365):
+for day in range(1, 366):
     print('================== День {} =================='.format(day))
     serge.act()
     masha.act()
     print(serge)
     print(masha)
     print(home)
-
-# TODO после реализации первой части - отдать на проверку учителю
+print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
+print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
+    home.accounting, home.food_accounting, masha.fur_coats))
 
 # Часть вторая
 #
