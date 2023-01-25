@@ -75,9 +75,6 @@ class Man:
         if self.happiness < 10:
             print('Счастья - {}, {} - умер от депрессии.'.format(self.happiness, self.name))
             return False
-        if home.dirt > 90:
-            self.happiness -= 10
-            return True
         return True
 
     def eat(self):
@@ -108,6 +105,8 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
+        if home.dirt > 90:
+            self.happiness -= 10
         if super().act():
             if self.fullness <= 20:
                 self.eat()
@@ -141,6 +140,8 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
+        if home.dirt > 90:
+            self.happiness -= 10
         if super().act():
             dice = randint(1, 3)
             if self.fullness <= 20:
@@ -264,22 +265,30 @@ class Cat:
 # отличия от взрослых - кушает максимум 10 единиц еды,
 # степень счастья - не меняется, всегда ==100 ;)
 
-class Child:
+class Child(Man):
+    happiness = 100
+    fullness = 30
 
-    def __init__(self):
-        pass
+    def __init__(self, name):
+        super().__init__(name=name)
 
     def __str__(self):
         return super().__str__()
 
     def act(self):
-        pass
+        if self.fullness <= 15:
+            self.eat()
+        else:
+            self.sleep()
 
     def eat(self):
-        pass
+        dice = randint(1, 10)
+        self.fullness += dice
+        print('{} поел.'.format(self.name))
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        print('{} поспал.'.format(self.name))
 
 
 # TODO после реализации второй части - отдать на проверку учителем две ветки
