@@ -306,7 +306,6 @@ class Cat:
         if self.fullness < 0:
             self.cat_alive = 1
             print('{} издох.'.format(self.name))
-            return '{} больше не с нами.'.format(self.name)
         else:
             dice = randint(1, 10)
             self.fullness += dice * 2
@@ -399,7 +398,7 @@ for day in range(1, 366):
     masha.act()
     kolya.act()
     for cat in cats:
-        print(cat.act())
+        cat.act()
     print(serge)
     print(masha)
     print(kolya)
