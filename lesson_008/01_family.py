@@ -54,7 +54,7 @@ class House:
 
     def __str__(self):
         self.dirt += 5
-        return 'Денег в тумбочке - {}, еды в холодильнике - {}, еды у кота - {}, грязи в {} - {}.'.format(
+        return 'Денег в тумбочке - {}, еды в холодильнике - {}, еды у котов - {}, грязи в {} - {}.'.format(
             self.bedside_money, self.food_in_the_fridge, self.cat_food, self.name, self.dirt)
 
 
@@ -80,13 +80,13 @@ class Man:
             home.bedside_money -= home.bedside_money
             home.accounting -= home.bedside_money
             self.fullness -= 10
-            print('{} купил{} {}у {} еды.'.format(self.name, self.sex_grammar, cat.name, home.bedside_money))
+            print('{} купил{} котам {} еды.'.format(self.name, self.sex_grammar, home.bedside_money))
         else:
             home.cat_food += dice
             home.bedside_money -= dice
             home.accounting += dice
             self.fullness -= 10
-            print('{} купил{} {}у {} еды.'.format(self.name, self.sex_grammar, cat.name, dice))
+            print('{} купил{} котам {} еды.'.format(self.name, self.sex_grammar, dice))
 
     def cat_petting(self):
         self.fullness -= 10
@@ -146,7 +146,7 @@ class Husband(Man):
                 self.eat()
             elif home.bedside_money <= 74:
                 self.work()
-            elif home.cat_food < 15:
+            elif home.cat_food < 30:
                 self.buy_cat_food()
             else:
                 self.gaming()
@@ -186,7 +186,7 @@ class Wife(Man):
                 self.shopping()
             elif home.dirt > 20:
                 self.clean_house()
-            elif home.cat_food < 15:
+            elif home.cat_food < 30:
                 self.buy_cat_food()
             else:
                 self.buy_fur_coat()
@@ -292,6 +292,9 @@ class Cat:
             self.cat_alive += 1
             print('{} больше не с нами.'.format(self.name))
             pass
+        elif home.cat_food <= 0:
+            self.fullness -= 10
+            print('У {}а закончилась еда.'.format(self.name))
         elif self.fullness < 15:
             self.eat()
         elif dice > 8:
@@ -300,10 +303,7 @@ class Cat:
             self.sleep()
 
     def eat(self):
-        if home.cat_food <= 0:
-            self.fullness -= 10
-            print('У {}а закончилась еда.'.format(self.name))
-        elif self.fullness < 0:
+        if self.fullness < 0:
             self.cat_alive = 1
             print('{} издох.'.format(self.name))
             return '{} больше не с нами.'.format(self.name)
@@ -380,7 +380,7 @@ class Child(Man):
 # Часть третья
 #
 # после подтверждения учителем второй части (обеих веток).
-# Влить в мастер все коммиты из ветки develop и разрешить все конфликты
+# Влить в мастера все коммит ы из ветки develop и разрешить все конфликты
 # отправить на проверку учителем.
 
 
@@ -388,18 +388,23 @@ home = House(name='Хаусе')
 serge = Husband(name='Сережа')
 masha = Wife(name='Маша')
 kolya = Child(name='Коля')
-cat = Cat(name='Мурзик')
+cats = [
+    Cat(name='Мурзик'),
+    Cat(name='Пират')
+]
 
 for day in range(1, 366):
     print('================== День {} =================='.format(day))
     serge.act()
     masha.act()
     kolya.act()
-    cat.act()
+    for cat in cats:
+        print(cat.act())
     print(serge)
     print(masha)
     print(kolya)
-    print(cat)
+    for cat in cats:
+        print(cat)
     print(home)
 print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
 print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
@@ -416,7 +421,7 @@ print('Всего денег потрачено - {}, еды съедено - {}
 # Дополнительно вносить некий хаос в жизнь семьи
 # - N раз в год вдруг пропадает половина еды из холодильника (коты?)
 # - K раз в год пропадает половина денег из тумбочки (муж? жена? коты?!?!)
-# Промоделировать - как часто могут случаться фейлы что бы это не повлияло на жизнь героев?
+# Промоделировать - как часто могут случаться fails что бы это не повлияло на жизнь героев?
 #   (N от 1 до 5, K от 1 до 5 - нужно вычислит максимумы N и K при котором семья гарантированно выживает)
 #
 # в итоге должен получится приблизительно такой код экспериментов
@@ -426,4 +431,3 @@ print('Всего денег потрачено - {}, еды съедено - {}
 #       for salary in range(50, 401, 50):
 #           max_cats = life.experiment(salary)
 #           print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
-
