@@ -94,7 +94,7 @@ class Man:
         print('{} гладит шерстяного.'.format(self.name))
 
     def act(self):
-        cat_petting_dice = randint(1, 100)
+        cat_petting_dice = randint(1, 30)
         if self.man_alive == 1:
             print('{} больше не с нами.'.format(self.name))
             return False
