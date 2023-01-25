@@ -98,9 +98,6 @@ class Man:
         if self.man_alive == 1:
             print('{} больше не с нами.'.format(self.name))
             return False
-        if home.dirt > 90:
-            self.happiness -= 10
-            return True
         if self.fullness < 0:
             self.man_alive += 1
             print('Сытость - {}, {} - умер от голода.'.format(self.fullness, self.name))
@@ -109,9 +106,6 @@ class Man:
             self.man_alive += 1
             print('Счастья - {}, {} - умер от депрессии.'.format(self.happiness, self.name))
             return False
-        # if home.cat_food < 15:
-        #     self.buy_cat_food()
-        #     return False
         if cat_petting_dice == 3:
             self.cat_petting()
             return False
@@ -145,6 +139,8 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
+        if home.dirt > 90:
+            self.happiness -= 10
         if super().act():
             if self.fullness <= 28:
                 self.eat()
@@ -170,7 +166,6 @@ class Husband(Man):
         print('{} игрался в игры.'.format(self.name))
 
 
-class Wife:
 class Wife(Man):
     fur_coats = 0
     sex_grammar = 'а'
@@ -182,6 +177,8 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
+        if home.dirt > 90:
+            self.happiness -= 10
         if super().act():
             if self.fullness <= 28:
                 self.eat()
@@ -236,9 +233,9 @@ class Wife(Man):
         print('{} убралась в доме, грязи стало меньше на {}.'.format(self.name, value_of_cleaning))
 
 
-home = House(name='Хаус')
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
+# home = House(name='Хаус')
+# serge = Husband(name='Сережа')
+# masha = Wife(name='Маша')
 
 # for day in range(1, 366):
 #     print('================== День {} =================='.format(day))
@@ -326,20 +323,20 @@ class Cat:
         print('{} драл обои.'.format(self.name))
 
 
-cat = Cat(name='Пират')
-
-for day in range(1, 366):
-    print('================== День {} =================='.format(day))
-    serge.act()
-    masha.act()
-    cat.act()
-    print(serge)
-    print(masha)
-    print(cat)
-    print(home)
-print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
-print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
-    home.accounting, home.food_accounting, masha.fur_coats))
+# cat = Cat(name='Пират')
+#
+# for day in range(1, 366):
+#     print('================== День {} =================='.format(day))
+#     serge.act()
+#     masha.act()
+#     cat.act()
+#     print(serge)
+#     print(masha)
+#     print(cat)
+#     print(home)
+# print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
+# print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
+#     home.accounting, home.food_accounting, masha.fur_coats))
 # Часть вторая бис
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
@@ -387,23 +384,26 @@ class Child(Man):
 # отправить на проверку учителем.
 
 
-# home = House()
-# serge = Husband(name='Сережа')
-# masha = Wife(name='Маша')
-# kolya = Child(name='Коля')
-# murzik = Cat(name='Мурзик')
-#
-# for day in range(365):
-#     cprint('================== День {} =================='.format(day), color='red')
-#     serge.act()
-#     masha.act()
-#     kolya.act()
-#     murzik.act()
-#     cprint(serge, color='cyan')
-#     cprint(masha, color='cyan')
-#     cprint(kolya, color='cyan')
-#     cprint(murzik, color='cyan')
+home = House(name='Хаусе')
+serge = Husband(name='Сережа')
+masha = Wife(name='Маша')
+kolya = Child(name='Коля')
+cat = Cat(name='Мурзик')
 
+for day in range(1, 366):
+    print('================== День {} =================='.format(day))
+    serge.act()
+    masha.act()
+    kolya.act()
+    cat.act()
+    print(serge)
+    print(masha)
+    print(kolya)
+    print(cat)
+    print(home)
+print('=========== Итоги союза {} и {} ==========='.format(serge.name, masha.name))
+print('Всего денег потрачено - {}, еды съедено - {}, шуб куплено - {}.'.format(
+    home.accounting, home.food_accounting, masha.fur_coats))
 
 # Усложненное задание (делать по желанию)
 #
