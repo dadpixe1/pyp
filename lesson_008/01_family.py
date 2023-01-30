@@ -2,7 +2,6 @@
 
 from random import randint
 
-
 # Часть первая.
 #
 # Создать модель жизни небольшой семьи.
@@ -72,22 +71,22 @@ class Man:
         return 'Я - {}, степень сытости - {}, счастье - {}.'.format(self.name, self.fullness, self.happiness)
 
     def buy_cat_food(self):
-        dice = randint(6, 10)
+        purchase_amount = (Husband.salary / 15) + randint(10, 30)
         if home.bedside_money == 0:
             self.fullness -= 10
             # print('Денег на еду шерстяному нет.')
-        elif home.bedside_money < dice:
+        elif home.bedside_money < purchase_amount:
             home.cat_food += home.bedside_money
             home.bedside_money -= home.bedside_money
             home.accounting -= home.bedside_money
             self.fullness -= 10
             # print('{} купил{} котам {} еды.'.format(self.name, self.sex_grammar, home.bedside_money))
         else:
-            home.cat_food += dice
-            home.bedside_money -= dice
-            home.accounting += dice
+            home.cat_food += purchase_amount
+            home.bedside_money -= purchase_amount
+            home.accounting += purchase_amount
             self.fullness -= 10
-            # print('{} купил{} котам {} еды.'.format(self.name, self.sex_grammar, dice))
+            # print('{} купил{} котам {} еды.'.format(self.name, self.sex_grammar, 50))
 
     def cat_petting(self):
         self.fullness -= 10
@@ -95,7 +94,7 @@ class Man:
         # print('{} гладит шерстяного.'.format(self.name))
 
     def act(self):
-        cat_petting_dice = randint(1, 30)
+        cat_petting_dice = randint(1, 60)
         if not self.man_alive:
             # print('{} больше не с нами.'.format(self.name))
             return False
@@ -113,21 +112,21 @@ class Man:
         return True
 
     def eat(self):
-        food_to_eat = randint(1, 30)
+        # food_to_eat = randint(1, 30)
         if home.food_in_the_fridge == 0:
             self.fullness -= 10
             # print('Еды в холодильнике нет.')
-        elif home.food_in_the_fridge < food_to_eat:
+        elif home.food_in_the_fridge < 30:
             rest_of_food = home.food_in_the_fridge
             home.accounting += rest_of_food
             self.fullness += rest_of_food
             home.food_in_the_fridge -= rest_of_food
             # print('{} поел{} {} еды.'.format(self.name, self.sex_grammar, rest_of_food))
         else:
-            home.food_accounting += food_to_eat
-            self.fullness += food_to_eat
-            home.food_in_the_fridge -= food_to_eat
-            # print('{} поел{} {} еды.'.format(self.name, self.sex_grammar, food_to_eat))
+            home.food_accounting += 30
+            self.fullness += 30
+            home.food_in_the_fridge -= 30
+            # print('{} поел{} {} еды.'.format(self.name, self.sex_grammar, 30))
 
 
 class Husband(Man):
@@ -140,6 +139,7 @@ class Husband(Man):
         return super().__str__()
 
     def act(self):
+        dice = randint(1, 2)
         if home.dirt > 90:
             self.happiness -= 10
         if super().act():
@@ -147,8 +147,12 @@ class Husband(Man):
                 self.eat()
             elif home.bedside_money <= 74:
                 self.work()
-            elif home.cat_food < 30:
+            elif home.cat_food < 50:
                 self.buy_cat_food()
+            elif dice == 1:
+                self.work()
+            # elif dice == 2:
+            #     self.buy_cat_food()
             else:
                 self.gaming()
 
@@ -178,6 +182,7 @@ class Wife(Man):
         return super().__str__()
 
     def act(self):
+        dice = randint(1, 6)
         if home.dirt > 90:
             self.happiness -= 10
         if super().act():
@@ -187,10 +192,12 @@ class Wife(Man):
                 self.shopping()
             elif home.dirt > 20:
                 self.clean_house()
-            elif home.cat_food < 30:
+            elif home.cat_food < 50:
                 self.buy_cat_food()
-            else:
+            elif dice == 3:
                 self.buy_fur_coat()
+            else:
+                self.buy_cat_food()
 
     def eat(self):
         super().eat()
@@ -200,7 +207,7 @@ class Wife(Man):
         if home.bedside_money == 0:
             self.fullness -= 10
             # print('Дожили, нет денег купить еды.')
-        elif home.bedside_money <= value_of_purchase:
+        elif home.bedside_money < value_of_purchase:
             self.fullness -= 10
             rest_of_money = home.bedside_money
             home.accounting += rest_of_money
@@ -296,9 +303,9 @@ class Cat:
         elif home.cat_food <= 0:
             self.fullness -= 10
             # print('У {}а закончилась еда.'.format(self.name))
-        elif self.fullness < 15:
+        elif self.fullness < 30:
             self.eat()
-        elif dice > 8:
+        elif dice > 7:
             self.soil()
         else:
             self.sleep()
@@ -309,7 +316,7 @@ class Cat:
             # print('{} издох.'.format(self.name))
         else:
             dice = randint(1, 10)
-            self.fullness += dice * 6
+            self.fullness += dice * 2
             home.cat_food -= dice
             # print('{} поел {} еды.'.format(self.name, dice))
 
@@ -384,9 +391,6 @@ class Child(Man):
         # print('{} поспал.'.format(self.name))
 
 
-# TODO после реализации второй части - отдать на проверку учителем две ветки
-
-
 # Часть третья
 #
 # после подтверждения учителем второй части (обеих веток).
@@ -394,20 +398,9 @@ class Child(Man):
 # отправить на проверку учителем.
 
 
-home = House(name='Хаусе')
-serge = Husband(name='Сережа')
-masha = Wife(name='Маша')
-kolya = Child(name='Коля')
-cats = []
-cats_to_move = [
-    Cat(name='Пират'),
-    Cat(name='Барсик'),
-    Cat(name='Борис'),
-    Cat(name='Кис-Кис'),
-    Cat(name='Кисун'),
-    Cat(name='Котофей'),
-    Cat(name='Мурзик')
-]
+# cats.clear()
+# for i in range(10):
+#     cats.append(cats_to_move[i])
 # for day in range(1, 366):
 #     print('================== День {} =================='.format(day))
 #     serge.act()
@@ -442,14 +435,22 @@ cats_to_move = [
 
 class Simulation:
 
-    def __init__(self, money_incidents, food_incidents):
-        self.money_incidents = money_incidents
-        self.food_incidents = food_incidents
-
-    def experiment(self, salary):
-        Husband.salary = salary
+    def experiment(self, salary, money_incidents, food_incidents):
+        serge.salary = salary
+        mon_fails_list = []
+        food_fails_list = []
         ok = 1
+        for i in range(food_incidents):
+            dice = randint(1, 366)
+            food_fails_list.append(dice)
+        for i in range(money_incidents):
+            dice = randint(1, 366)
+            mon_fails_list.append(dice)
         for day in range(1, 366):
+            if day in mon_fails_list:
+                home.bedside_money /= 2
+            if day in food_fails_list:
+                home.food_in_the_fridge /= 2
             serge.act()
             masha.act()
             kolya.act()
@@ -457,36 +458,62 @@ class Simulation:
                 cat.act()
                 if not cat.cat_alive:
                     ok = 0
+            if not serge.man_alive:
+                ok = 0
+            elif not masha.man_alive:
+                ok = 0
+            elif not kolya.man_alive:
+                ok = 0
         if ok == 1:
             return len(cats)
         else:
             return '0'
 
 
+def f1():
+    print('*' * 54)
 
 
-
-
-
-
-    # cats.clear()
-
-
-# life = Simulation(money_incidents=0, food_incidents=0)
-# max_cats = life.experiment(salary=400)
-# print(max_cats)
+def f2():
+    for i in range(9000):
+        life_to_life.append(Simulation())
+        home_to_home.append(House(name='Хаусе'))
+        serge_to_serge.append(Husband(name='Сережа'))
+        masha_to_masha.append(Wife(name='Маша'))
+        kolya_to_kolya.append(Child(name='Коля'))
 
 
 # в итоге должен получится приблизительно такой код экспериментов
+count = 0
+n, N, k, K = 0, 2, 0, 2
+cats, home_to_home, life_to_life, serge_to_serge, masha_to_masha, kolya_to_kolya = [], [], [], [], [], []
 
+f2()
+for food_incidents in range(n, N):
+    for money_incidents in range(k, K):
+        for salary in range(150, 401, 50):
+            if salary == 150:
+                f1()
+                print('Инциденты с деньгами за год: ', money_incidents)
+                print('Инциденты с едой за год: ', food_incidents)
+            cats.clear()
+            for i in range(16):
+                count += 1
+                cats.append(Cat(name='Test'))
+                home, serge, masha, kolya = home_to_home[count], serge_to_serge[count], masha_to_masha[count],\
+                    kolya_to_kolya[count]
+                max_cats = life_to_life[count].experiment(
+                    salary=salary, money_incidents=money_incidents, food_incidents=food_incidents)
+                if max_cats == '0':
+                    print(f'При зарплате {salary} максимально можно прокормить {i} котов')
+                    break
+                elif max_cats == 16:
+                    print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
+                cats.clear()
+                del life_to_life[count]
+                for _ in range(0, i + 1):
+                    cats.append(Cat(name='Test'))
 
-# for food_incidents in range(6):
-#     for money_incidents in range(6):
-life = Simulation(money_incidents=0, food_incidents=0)
-for salary in range(150, 401, 50):
-    cats.clear()
-    for i in range(5):
-        cats.append(Cat(name='Тест'))
-        max_cats = life.experiment(salary=salary)
-        print(f'При зарплате {salary} максимально можно прокормить {max_cats} котов')
-
+# В данной модели:
+# Гарантированная случайная выживаемость - при максимальном пороге N - 1, K - 1.
+# При значениях N и K выше имеет место появление смертности.
