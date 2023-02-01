@@ -24,10 +24,14 @@ import zipfile
 
 
 class LogPaser:
-    """ Smthng. """
+    """ period - event frequency: 'minute', 'hour', 'day', 'month' or 'year',
+        event - data to find in log: 'your_data',
+        file_to_read - your file name and file extension (can read .zip),
+        file_to_write - name and extension of your output log file (file created automatically).
+    """
 
-    def __init__(self, file_to_read, file_to_write, event, method):
-        self.method = method
+    def __init__(self, file_to_read, file_to_write, event, period):
+        self.method = period
         self.event = event
         self.file_to_write = file_to_write
         self.file_name = file_to_read
@@ -60,6 +64,8 @@ class LogPaser:
             self.event_extracting(clock=5, calendar=-3)
         elif self.method == 'year':
             self.event_extracting(clock=5, calendar=-6)
+        else:
+            print('Error. You must choose correct period.')
 
     def event_extracting(self, clock, calendar):
         temp, last_line, event_value = [], 0, 0
@@ -69,9 +75,7 @@ class LogPaser:
             if self.event in line:
                 item = line.split(' ')
                 data, time = item[0][1:calendar:], item[1][0: clock]
-                if self.method == 'minute':
-                    temp.append(f'{data} {time}')
-                elif self.method == 'hour':
+                if self.method == 'minute' or self.method == 'hour':
                     temp.append(f'{data} {time}')
                 else:
                     temp.append(f'{data}')
@@ -85,7 +89,6 @@ class LogPaser:
                         self.list_to_print.append(f'[{temp[-2]}] {event_value}')
                     elif temp[-2] != temp[-1]:
                         self.list_to_print.append(f'[{temp[-2]}] {event_value}')
-                        event_value = 0
         pprint(self.list_to_print)
         self.write_to()
 
@@ -96,7 +99,7 @@ class LogPaser:
                 file.write('\n')
 
 
-LogPaser(file_to_read='events.txt', file_to_write='', event='NOK', method='minute')
+LogPaser(file_to_read='events.txt', file_to_write='', event='NOK', period='minute')
 
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
