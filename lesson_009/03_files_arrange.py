@@ -37,10 +37,10 @@ import os, time, shutil
 
 class FilesSortedByData:
 
-    def __init__(self, scan_dir, done_dir):
+    def __init__(self, source_dir, dest_dir):
         self.current_dir = os.path.dirname(__file__)
-        self.scan_dir = scan_dir
-        self.done_dir = done_dir
+        self.scan_dir = source_dir
+        self.done_dir = dest_dir
         self.temp_dict = []
         self.temp_data = []
         self.scan()
@@ -68,7 +68,7 @@ class FilesSortedByData:
                 shutil.copy2(src=path, dst=new_folder_path)
 
 
-FilesSortedByData(scan_dir='D:\\m\\mvs\\pyp\\lesson_009\\icons', done_dir='icons_by_year')
+FilesSortedByData(source_dir='D:\\m\\mvs\\pyp\\lesson_009\\icons', dest_dir='icons_by_year')
 # Усложненное задание (делать по желанию)
 # Нужно обрабатывать zip-файл, содержащий фотографии, без предварительного извлечения файлов в папку.
 # Основная функция должна брать параметром имя zip-файла и имя целевой папки.
