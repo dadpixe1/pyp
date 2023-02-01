@@ -26,10 +26,11 @@ import zipfile
 class LogPaser:
     """ Smthng. """
 
-    def __init__(self, file_to_read, file_to_write, event):
+    def __init__(self, file_to_read, file_to_write, event, method):
+        self.method = method
+        self.event = event
         self.file_to_write = file_to_write
         self.file_name = file_to_read
-        self.event = event
         self.log_list = []
         self.list_to_print = []
         self.log_collect()
@@ -46,19 +47,46 @@ class LogPaser:
         with open(self.file_name, 'r', encoding='cp1251') as file:
             for line in file:
                 self.log_list.append(line)
-        self.event_extracting()
+        self.method_choose()
 
-    def event_extracting(self):
-        temp, event_value = [], 0
+    def method_choose(self):
+        if self.method == 'minute':
+            self.event_extracting(clock=5, calendar=None)
+        elif self.method == 'hour':
+            self.event_extracting(clock=2, calendar=None)
+        elif self.method == 'day':
+            self.event_extracting(clock=5, calendar=None)
+        elif self.method == 'month':
+            self.event_extracting(clock=5, calendar=-3)
+        elif self.method == 'year':
+            self.event_extracting(clock=5, calendar=-6)
+
+    def event_extracting(self, clock, calendar):
+        temp, last_line, event_value = [], 0, 0
         for line in self.log_list:
+            if line == self.log_list[-2]:
+                last_line = 1
             if self.event in line:
                 item = line.split(' ')
-                temp.append(f'{item[0][1:]} {item[1][0: 5]}')
+                data, time = item[0][1:calendar:], item[1][0: clock]
+                if self.method == 'minute':
+                    temp.append(f'{data} {time}')
+                elif self.method == 'hour':
+                    temp.append(f'{data} {time}')
+                else:
+                    temp.append(f'{data}')
                 if len(temp) > 1:
                     event_value += 1
-                    if temp[-2] != temp[-1]:
+                    if calendar == -3 and last_line == 1:
+                        event_value += 1
+                        self.list_to_print.append(f'[{temp[-2]}] {event_value}')
+                    elif calendar == -6 and last_line == 1:
+                        event_value += 1
+                        self.list_to_print.append(f'[{temp[-2]}] {event_value}')
+                    elif temp[-2] != temp[-1]:
                         self.list_to_print.append(f'[{temp[-2]}] {event_value}')
                         event_value = 0
+        pprint(self.list_to_print)
         self.write_to()
 
     def write_to(self):
@@ -68,7 +96,7 @@ class LogPaser:
                 file.write('\n')
 
 
-LogPaser(file_to_read='events.txt', file_to_write='NOK_events_per_min.txt', event='NOK')
+LogPaser(file_to_read='events.txt', file_to_write='', event='NOK', method='minute')
 
 # После выполнения первого этапа нужно сделать группировку событий
 #  - по часам
