@@ -38,10 +38,11 @@ import os, time, shutil
 class FilesSortedByData:
 
     def __init__(self, scan_dir, done_dir):
-        self.temp_data = []
-        self.temp_path = {}
+        self.current_dir = os.path.dirname(__file__)
         self.scan_dir = scan_dir
         self.done_dir = done_dir
+        self.temp_dict = []
+        self.temp_data = []
         self.scan()
 
     def scan(self):
@@ -52,19 +53,19 @@ class FilesSortedByData:
                 file_time = time.gmtime(dir_secs)
                 line = file_time[0], file_time[1], file_path
                 self.temp_data.append(line)
-                print(file_time[0], file_time[1])
         self.folders_und_files()
 
     def folders_und_files(self):
-        dictionary = []
-        s = sorted(self.temp_data)
-        for year, month, path in s:
+        for year, month, path in sorted(self.temp_data):
             data = year, month
-            if data in dictionary:
-                pass  # создать с нормпэф путь\\закинуть в шутил оба пути
+            if data in self.temp_dict:
+                exist_folder_path = os.path.join(f'{self.current_dir}\\{self.done_dir}\\{year}\\{month}')
+                shutil.copy2(src=path, dst=exist_folder_path)
             else:
-                dictionary.append(data)  # создать папку и закинуть в нее файл
-        print(dictionary)
+                self.temp_dict.append(data)
+                new_folder_path = f'{self.current_dir}\\{self.done_dir}\\{year}\\{month}'
+                os.makedirs(new_folder_path)
+                shutil.copy2(src=path, dst=new_folder_path)
 
 
 FilesSortedByData(scan_dir='D:\\m\\mvs\\pyp\\lesson_009\\icons', done_dir='icons_by_year')
