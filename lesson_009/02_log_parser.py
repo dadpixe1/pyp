@@ -81,14 +81,11 @@ class LogPaser:
                     temp.append(f'{data}')
                 if len(temp) > 1:
                     event_value += 1
-                    if calendar == -3 and last_line == 1:
-                        event_value += 1
-                        self.list_to_print.append(f'[{temp[-2]}] {event_value}')
-                    elif calendar == -6 and last_line == 1:
-                        event_value += 1
-                        self.list_to_print.append(f'[{temp[-2]}] {event_value}')
+                    if last_line == 1 and self.method == 'month' or last_line == 1 and self.method == 'year':
+                        self.list_to_print.append(f'[{temp[-2]}] {event_value + 1}')
                     elif temp[-2] != temp[-1]:
                         self.list_to_print.append(f'[{temp[-2]}] {event_value}')
+                        event_value = 0
         pprint(self.list_to_print)
         self.write_to()
 
