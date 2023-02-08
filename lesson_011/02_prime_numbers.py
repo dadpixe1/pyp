@@ -85,17 +85,26 @@ def get_prime_numbers(n):
 # Подсказка: возможно, нужно будет добавить параметр в итератор/генератор.
 
 # def lucky_numbers(n):
-#     numbers, half = [], int(len(str(n)) / 2)
-#     for numb in str(n):
-#         numbers.append(numb)
-#     result_l = sum(int(x) for x in numbers[half:] if len(str(n)) % 2 == 0)
-#     result_r = sum(int(x) for x in numbers[:half] if len(str(n)) % 2 == 0)
-#     res_l, res_r = sum(int(x) for x in numbers[half + 1:]), sum(int(x) for x in numbers[:half + 1])
-#     if res_r == res_l or result_r == result_l:
+#     half = int(len(str(n)) / 2)
+#     result_l = sum(int(x) for x in str(n)[:half] if len(str(n)) % 2 == 0)
+#     result_r = sum(int(x) for x in str(n)[half:] if len(str(n)) % 2 == 0)
+#     res_l, res_r = sum(int(x) for x in str(n)[:half + 1]), sum(int(x) for x in str(n)[half:])
+#     if result_l > 0 and result_l == result_r or res_l == res_r:
 #         return True
 #
 #
 # print(lucky_numbers(92083))
 
 
-
+# def palin_numbers(n):
+#     half = int(len(str(n)) / 2)
+#     result_l = (int(x) for x in str(n)[:half] if len(str(n)) % 2 == 0)
+#     result_r = (int(x) for x in str(n)[half:] if len(str(n)) % 2 == 0)
+#     res_l, res_r = (int(x) for x in str(n)[:half + 1]), (int(x) for x in str(n)[half:])
+#     left_gen, right_gen = list(result_l), list(reversed(list(result_r)))
+#     l_gen, r_gen = list(res_l), list(reversed(list(res_r)))
+#     if left_gen is not None and left_gen == right_gen or l_gen == r_gen:
+#         return True
+#
+#
+# print(palin_numbers(723327))
