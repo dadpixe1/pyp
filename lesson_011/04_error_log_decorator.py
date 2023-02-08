@@ -8,17 +8,22 @@
 # Лог файл открывать каждый раз при ошибке в режиме 'a'
 
 
-def log_errors(func):
-    def surrogate(param):
-        try:
-            result = func(param)
-            print(result)
-        except ArithmeticError as exc:
-            print(f'Hey, we got {type(exc)} here in {func.__name__}`s {param}: {exc}')
-            with open('function_errors.log', 'a', encoding='utf8') as file:
-                file.write(f'Hey, we got {type(exc)} here in {func.__name__}`s attribute "{param}": {exc}\n')
-    return surrogate
+def log_errors(arg):
+    def inner_decorator(func):
+        path = arg
 
+        def surrogate(*args, **kwargs):
+            try:
+                result = func(*args, **kwargs)
+            except (ArithmeticError, ValueError) as exc:
+                print(f'Hey, we got {type(exc)} here in {func.__name__}`s "{args}" or "{kwargs}": {exc}')
+                with open(path, 'a', encoding='utf8') as file:
+                    file.write(f'Hey, we got {type(exc)} here'
+                               f' in {func.__name__}`s attribute(s) "{args}" or/and "{kwargs}": {exc}\n')
+
+        return surrogate
+
+    return inner_decorator
 
 
 # Проверить работу на следующих функциях
@@ -26,9 +31,10 @@ def log_errors(func):
 # def perky(param):
 #     return param / 0
 #
+#
 # perky(9j)
-
-
+#
+#
 # @log_errors
 # def check_line(line):
 #     name, email, age = line.split(' ')
@@ -55,11 +61,11 @@ def log_errors(func):
 #         print(f'Invalid format: {exc}')
 # perky(param=42)
 
-
 # Усложненное задание (делать по желанию).
 # Написать декоратор с параметром - именем файла
 #
-# @log_errors('function_errors.log')
-# def func():
-#     pass
+@log_errors('function_errors.log')
+def func(param):
+    return param / 0
 
+func(6)
