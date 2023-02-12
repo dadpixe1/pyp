@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+import time
 
 # Описание предметной области:
 #
@@ -73,4 +75,78 @@
 #     def run(self):
 #         <обработка данных>
 
-# TODO написать код в однопоточном/однопроцессорном стиле
+
+class Trades:
+
+    def __init__(self, path, tickers, *args, **kwargs):
+        self.tickers = tickers
+        self.path = path
+        self.sorted = {}
+        self.temp = {}
+        self.run()
+        self.volatility_to_sorted()
+
+    def run(self):
+        pyth_path = os.path.normpath(self.path)
+        for dirpath, dirnames, filenames in os.walk(pyth_path):
+            for file in filenames:
+                file_path = os.path.join(dirpath, file)
+                with open(file_path, 'r', encoding='utf8') as trades_data:
+                    self.analyse_to_temp(trades_data)
+
+    def analyse_to_temp(self, trades_data):
+        count = 0
+        for line in trades_data:
+            stripped_line = line.strip('\n')
+            secid, trdetime, price_, quantity = stripped_line.split(',')
+            price = price_.split('.')[0]
+            if secid == 'SECID':
+                count = len(self.temp) + 1
+                continue
+            if len(self.temp) != count:
+                self.temp[f'{secid}'] = {'max': int(price), 'min': int(price)}
+            else:
+                if int(price) > self.temp[f'{secid}']['max']:
+                    self.temp[f'{secid}']['max'] = int(price)
+                elif int(price) < int(self.temp[f'{secid}']['min']):
+                    self.temp[f'{secid}']['min'] = int(price)
+
+    def volatility_to_sorted(self):
+        time.sleep(1)
+        for secid, prices in self.temp.items():
+            max_price, min_price = prices['max'], prices['min']
+            if max_price == 0 and min_price == 0:
+                self.sorted[secid] = 0
+            else:
+                average_price = (max_price + min_price) / 2
+                volatility = ((max_price - min_price) / average_price) * 100
+                self.sorted[secid] = round(volatility, 2)
+        self.max_volatility(tickers=self.tickers)
+        self.min_volatility(tickers=self.tickers)
+        self.zero_volatility()
+
+    def max_volatility(self, tickers):
+        print_count = 0
+        print(f"{'Максимальная волатильность:': ^35}")
+        for secid, volatility in reversed(sorted(self.sorted.items(), key=lambda item: item[1])):
+            if volatility != 0 and print_count < tickers:
+                print_count += 1
+                print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
+
+    def min_volatility(self, tickers):
+        print_count = 0
+        print(f"{'Минимальная волатильность:': ^35}")
+        for secid, volatility in list(sorted(self.sorted.items(), key=lambda item: item[1])):
+            if volatility != 0 and print_count < tickers:
+                print_count += 1
+                print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
+
+    def zero_volatility(self):
+        print(f"{'Нулевая волатильность:': ^35}")
+        for secid, volatility in sorted(self.sorted.items()):
+            if volatility == 0:
+                print(f'ТИКЕР {secid}, ', end='')
+
+
+path = 'D:\\m\\mvs\\pyp\\lesson_012\\trades\\'
+test = Trades(path, 3)
