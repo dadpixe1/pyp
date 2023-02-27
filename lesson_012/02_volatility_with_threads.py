@@ -2,8 +2,8 @@
 
 import os
 import time
-from pprint import pprint
 from threading import Thread
+from lesson_012.python_snippets.utils import time_track
 # Задача: вычислить 3 тикера с максимальной и 3 тикера с минимальной волатильностью в МНОГОПОТОЧНОМ стиле
 #
 # Бумаги с нулевой волатильностью вывести отдельно.
@@ -23,38 +23,31 @@ from threading import Thread
 
 class Trades(Thread):
 
-    def __init__(self, name, path, statistic, *args, **kwargs):
+    def __init__(self, file, statistic, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.name = name
-        self.path = path
+        self.file = file
         self.sorted = statistic
         self.temp = {}
+        self.analyse_to_temp()
 
-    def run(self):
-        pyth_path = os.path.normpath(self.path)
-        for dirpath, dirnames, filenames in os.walk(pyth_path):
-            for file in filenames:
-                file_path = os.path.join(dirpath, file)
-                with open(file_path, 'r', encoding='utf8') as trades_data:
-                    self.analyse_to_temp(trades_data)
-
-    def analyse_to_temp(self, trades_data):
-        count = 0
-        time.sleep(0.0000001)
-        for line in trades_data:
-            stripped_line = line.strip('\n')
-            secid, trdetime, price_, quantity = stripped_line.split(',')
-            price = price_.split('.')[0]
-            if secid == 'SECID':
-                count = len(self.temp) + 1
-                continue
-            if len(self.temp) != count:
-                self.temp[f'{secid}'] = {'max': int(price), 'min': int(price)}
-            else:
-                if int(price) > self.temp[f'{secid}']['max']:
-                    self.temp[f'{secid}']['max'] = int(price)
-                elif int(price) < int(self.temp[f'{secid}']['min']):
-                    self.temp[f'{secid}']['min'] = int(price)
+    def analyse_to_temp(self):
+        with open(self.file, 'r', encoding='utf8') as trades_data:
+            count = 0
+            time.sleep(0.000001)
+            for line in trades_data:
+                stripped_line = line.strip('\n')
+                secid, trdetime, price_, quantity = stripped_line.split(',')
+                price = price_.split('.')[0]
+                if secid == 'SECID':
+                    count = len(self.temp) + 1
+                    continue
+                if len(self.temp) != count:
+                    self.temp[f'{secid}'] = {'max': int(price), 'min': int(price)}
+                else:
+                    if int(price) > self.temp[f'{secid}']['max']:
+                        self.temp[f'{secid}']['max'] = int(price)
+                    elif int(price) < int(self.temp[f'{secid}']['min']):
+                        self.temp[f'{secid}']['min'] = int(price)
         self.volatility_to_sorted()
 
     def volatility_to_sorted(self):
@@ -70,26 +63,25 @@ class Trades(Thread):
 
 class TradesTickersStat:
 
-    def __init__(self, tickers, dict):
-        self.tickers = tickers
+    def __init__(self, dict):
         self.sorted = dict
-        self.max_volatility(tickers)
-        self.min_volatility(tickers)
+        self.max_volatility()
+        self.min_volatility()
         self.zero_volatility()
 
-    def max_volatility(self, tickers):
+    def max_volatility(self):
         print_count = 0
         print(f"{'Максимальная волатильность:': ^35}")
         for secid, volatility in reversed(sorted(self.sorted.items(), key=lambda item: item[1])):
-            if volatility != 0 and print_count < tickers:
+            if volatility != 0 and print_count < 3:
                 print_count += 1
                 print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
 
-    def min_volatility(self, tickers):
+    def min_volatility(self):
         print_count = 0
         print(f"{'Минимальная волатильность:': ^35}")
         for secid, volatility in list(sorted(self.sorted.items(), key=lambda item: item[1])):
-            if volatility != 0 and print_count < tickers:
+            if volatility != 0 and print_count < 3:
                 print_count += 1
                 print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
 
@@ -100,20 +92,26 @@ class TradesTickersStat:
                 print(f'ТИКЕР {secid}, ', end='')
 
 
-path = 'D:\\m\\mvs\\pyp\\lesson_012\\trades\\'
+dir = 'D:\\m\\mvs\\pyp\\lesson_012\\trades\\'
+path_list = []
 statistic = {}
-# trades = [Trades(name=str(name), path=path, tickers=3, barrier=barrier) for name in range(2)]
-# for trade in trades:
-#     trade.start()
-# for trade in trades:
-#     trade.join()
-a = Trades(name='a', path=path, statistic=statistic)
-b = Trades(name='b', path=path, statistic=statistic)
+pyth_path = os.path.normpath(dir)
+for dirpath, dirnames, filenames in os.walk(pyth_path):
+    for file in filenames:
+        file_path = os.path.join(dirpath, file)
+        path_list.append(file_path)
 
-a.start()
-b.start()
 
-a.join()
-b.join()
+@time_track
+def calculating():
+    files = [Trades(file=file, statistic=statistic) for file in path_list]
 
-TradesTickersStat(tickers=3, dict=statistic)
+    for file in files:
+        file.start()
+    for file in files:
+        file.join()
+    return TradesTickersStat(dict=statistic)
+
+
+if __name__ == '__main__':
+    calculating()

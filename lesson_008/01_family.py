@@ -232,7 +232,8 @@ class Wife(Man):
             # print('{} купила шубу.'.format(self.name))
         else:
             self.fullness -= 10
-            # print('{} жалуется, что на шубу не хватает {} денег.'.format(self.name, fur_coat_cost - home.bedside_money))
+            # print('{} жалуется, что на шубу не хватает {} денег.'.format(
+            # self.name, fur_coat_cost - home.bedside_money))
 
     def clean_house(self):
         value_of_cleaning = 100
@@ -440,10 +441,10 @@ class Simulation:
         mon_fails_list = []
         food_fails_list = []
         ok = 1
-        for i in range(food_incidents):
+        for _ in range(food_incidents):
             dice = randint(1, 366)
             food_fails_list.append(dice)
-        for i in range(money_incidents):
+        for _ in range(money_incidents):
             dice = randint(1, 366)
             mon_fails_list.append(dice)
         for day in range(1, 366):
@@ -475,7 +476,7 @@ def f1():
 
 
 def f2():
-    for i in range(9000):
+    for _ in range(9000):
         life_to_life.append(Simulation())
         home_to_home.append(House(name='Хаусе'))
         serge_to_serge.append(Husband(name='Сережа'))

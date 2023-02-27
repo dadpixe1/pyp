@@ -2,6 +2,7 @@
 
 import os
 import time
+from lesson_012.python_snippets.utils import time_track
 
 # Описание предметной области:
 #
@@ -78,8 +79,7 @@ import time
 
 class Trades:
 
-    def __init__(self, path, tickers, *args, **kwargs):
-        self.tickers = tickers
+    def __init__(self, path, *args, **kwargs):
         self.path = path
         self.sorted = {}
         self.temp = {}
@@ -121,23 +121,23 @@ class Trades:
                 average_price = (max_price + min_price) / 2
                 volatility = ((max_price - min_price) / average_price) * 100
                 self.sorted[secid] = round(volatility, 2)
-        self.max_volatility(tickers=self.tickers)
-        self.min_volatility(tickers=self.tickers)
+        self.max_volatility()
+        self.min_volatility()
         self.zero_volatility()
 
-    def max_volatility(self, tickers):
+    def max_volatility(self):
         print_count = 0
         print(f"{'Максимальная волатильность:': ^35}")
         for secid, volatility in reversed(sorted(self.sorted.items(), key=lambda item: item[1])):
-            if volatility != 0 and print_count < tickers:
+            if volatility != 0 and print_count < 3:
                 print_count += 1
                 print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
 
-    def min_volatility(self, tickers):
+    def min_volatility(self):
         print_count = 0
         print(f"{'Минимальная волатильность:': ^35}")
         for secid, volatility in list(sorted(self.sorted.items(), key=lambda item: item[1])):
-            if volatility != 0 and print_count < tickers:
+            if volatility != 0 and print_count < 3:
                 print_count += 1
                 print(f"{f'ТИКЕР {secid} - {volatility} %': ^35}")
 
@@ -149,4 +149,11 @@ class Trades:
 
 
 path = 'D:\\m\\mvs\\pyp\\lesson_012\\trades\\'
-test = Trades(path, 3)
+
+
+@time_track
+def test():
+    test = Trades(path)
+
+
+test()
